@@ -1093,7 +1093,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f090002;
         public static final int action_menu_presenter=0x7f090003;
         public static final int action_mode_close_button=0x7f090025;
-        public static final int action_settings=0x7f090045;
+        public static final int action_settings=0x7f090046;
         public static final int activity_chooser_view_content=0x7f090026;
         public static final int always=0x7f090010;
         public static final int beginning=0x7f090017;
@@ -1119,8 +1119,9 @@ containing a value of this type.
         public static final int image=0x7f090028;
         public static final int listMode=0x7f090007;
         public static final int list_item=0x7f09002a;
-        public static final int menu_item_new_crime=0x7f090043;
-        public static final int menu_item_show_subtitle=0x7f090044;
+        public static final int menu_item_delete_crime=0x7f090043;
+        public static final int menu_item_new_crime=0x7f090044;
+        public static final int menu_item_show_subtitle=0x7f090045;
         public static final int middle=0x7f090019;
         public static final int never=0x7f090013;
         public static final int none=0x7f09001a;
@@ -1211,8 +1212,9 @@ containing a value of this type.
         public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
-        public static final int fragment_crime_list=0x7f0c0000;
-        public static final int main=0x7f0c0001;
+        public static final int crime_list_item_context=0x7f0c0000;
+        public static final int fragment_crime_list=0x7f0c0001;
+        public static final int main=0x7f0c0002;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 

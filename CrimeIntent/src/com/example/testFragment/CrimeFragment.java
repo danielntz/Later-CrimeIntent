@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.info.Crime;
 import com.example.info.CrimeGet;
+import com.example.testmenu.CrimeCameraActivity;
 import com.example.testmenu.R;
 /**
  * 罪行编辑框
@@ -37,6 +39,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 	private   CheckBox  box;
 	private   EditText  title;
 	private   static  final int REQUEST_DATE = 0;
+	private    ImageButton takephoto;
 	public   static CrimeFragment newInstance(UUID crimeid){
 		Bundle bundle  = new Bundle();
 		bundle.putSerializable("Crime_Id", crimeid);
@@ -51,6 +54,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		// TODO Auto-generated method stub
 		View   view  =  inflater.inflate(R.layout.crime, container, false);
 		buttondate =(Button) view.findViewById(R.id.crime_date);
+		takephoto = (ImageButton)view.findViewById(R.id.crime_take);
 		title = (EditText)view.findViewById(R.id.crime_name);
 		box = (CheckBox)view.findViewById(R.id.crime_solve);
 		//1获得点击列表项的UUID 2获得重新编辑框的UUID
@@ -82,6 +86,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		//   crimeselect.setmSolved(box.isChecked());
 		//   CrimeGet.setCrimeget(CrimeGet.getCrimeget());
 		buttondate.setOnClickListener(this);
+		takephoto.setOnClickListener(this);
 		return view;
 	}
 	@Override
@@ -130,7 +135,10 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);  //设置Fragment的目标
 			dialog.show(fm, DIALOG_DATE);
 			break;
-
+		case R.id.crime_take:
+			Intent i  = new Intent(getContext(),CrimeCameraActivity.class);
+			 startActivity(i);
+			 break;
 		default:
 			break;
 		}

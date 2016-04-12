@@ -3,7 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+    <RelativeLayout 
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+         >
+          
+        <ImageButton  
+               android:id="@+id/crime_take"
+               android:layout_width="50dip"
+               android:layout_height="60dip"
+               android:background="@drawable/camera"
+              />
+        <LinearLayout 
+              android:layout_toRightOf="@id/crime_take"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
      <TextView   
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
@@ -16,6 +31,8 @@
          >
          
      </EditText>
+     </LinearLayout>
+     </RelativeLayout>
      
      <TextView  
                             android:layout_width="wrap_content"

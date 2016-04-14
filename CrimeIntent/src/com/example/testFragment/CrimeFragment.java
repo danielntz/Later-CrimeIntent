@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +22,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.example.info.Crime;
 import com.example.info.CrimeGet;
+import com.example.info.Photo;
+import com.example.info.PictureUtils;
 import com.example.testmenu.CrimeCameraActivity;
 import com.example.testmenu.R;
 /**
@@ -40,7 +46,8 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 	private   EditText  title;
 	private   static  final int REQUEST_DATE = 0;
 	private   static  final int REQUEST_PHOTO = 1;
-	
+	private   ImageView image_show ;
+    private   static final  String DIALOG_IMAGE = "image";
 	private    ImageButton takephoto;
 	public   static CrimeFragment newInstance(UUID crimeid){
 		Bundle bundle  = new Bundle();
@@ -48,6 +55,16 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		CrimeFragment fragment = new CrimeFragment();
 		fragment.setArguments(bundle);
 		return fragment;
+	}
+	//用来把拍的照片显示在IamgeView上
+	private void ShowPhoto(){
+		Photo p = crimeselect.getmPhoto();
+		BitmapDrawable b  = null;
+		if( p != null){
+			String path = getActivity().getFileStreamPath(p.getMfilename()).getAbsolutePath();
+			b = PictureUtils.getScaDrawable(getActivity(), path);
+			image_show.setImageDrawable(b);   //把图片显示在IamgeView上
+		}
 	}
 
 	@Override
@@ -59,6 +76,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		takephoto = (ImageButton)view.findViewById(R.id.crime_take);
 		title = (EditText)view.findViewById(R.id.crime_name);
 		box = (CheckBox)view.findViewById(R.id.crime_solve);
+		image_show = (ImageView)view.findViewById(R.id.crime_show);  //显示图片
 		//1获得点击列表项的UUID 2获得重新编辑框的UUID
 		UUID crimeid = (UUID)getArguments().getSerializable("Crime_Id");
 		Log.i(TAG, crimeid+"");
@@ -74,7 +92,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		//实现层级式导航、1 元数据 在配置文件中加入父activity属性 ，不采用intent方式
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 			if(NavUtils.getParentActivityName(getActivity()) != null){
-			getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+				getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
 		title.setText(crimeselect.getMmTitle());
@@ -87,8 +105,17 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		//   crimeselect.setmDate(new Date());
 		//   crimeselect.setmSolved(box.isChecked());
 		//   CrimeGet.setCrimeget(CrimeGet.getCrimeget());
+		//检查设备是否有相机
+		PackageManager pm = getActivity().getPackageManager();
+		boolean hasAcamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)|| pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)
+				              || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1 ||
+				                Camera.getNumberOfCameras() > 0;
+		 if( !hasAcamera){
+			 takephoto.setEnabled(true);
+		 }
 		buttondate.setOnClickListener(this);
 		takephoto.setOnClickListener(this);
+		image_show.setOnClickListener(this);
 		return view;
 	}
 	@Override
@@ -112,7 +139,13 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			//创建一个照片对象添加到Crime类中
 			String filename = data.getStringExtra("PHOTO");
 			if(filename != null){
-				Log.i(TAG, "filename +" + filename);
+				//	Log.i(TAG, "filename +" + filename);
+				//把返回的图片信息放到photo类中，之所以添加photo类，而不添加photo属性
+				//因为你需要对图片进行处理，对图片操作，这样就方便些
+				Photo photo = new Photo(filename);
+				crimeselect.setmPhoto(photo);
+			    ShowPhoto();
+				//	Log.i(TAG, "Crime:" + crimeselect.getMmTitle()+"has a photo");
 			}
 		}
 	} 
@@ -122,15 +155,15 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			if(NavUtils.getParentActivityName(getActivity()) != null){
-				  NavUtils.navigateUpFromSameTask(getActivity());   //导航到父Activity
+				NavUtils.navigateUpFromSameTask(getActivity());   //导航到父Activity
 			}
-			 return true;
-			
+			return true;
+
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-		
+
 	}
 	@Override
 	public void onClick(View v) {
@@ -148,7 +181,16 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			//以接受返回值的方式来启动CrimeCameraActivity
 			startActivityForResult(i, REQUEST_PHOTO);
 			// startActivity(i);
-			 break;
+			break;
+		case R.id.crime_show:
+			 Photo p  = crimeselect.getmPhoto();
+			 if( p == null){
+				 return ;
+			 }
+			 FragmentManager fm1 = getActivity().getSupportFragmentManager();
+			 String path = getActivity().getFileStreamPath(p.getMfilename()).getAbsolutePath();
+			 ImageFragment.newInstance(path).show(fm1, DIALOG_IMAGE);
+			 
 		default:
 			break;
 		}
@@ -170,5 +212,10 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		super.onDestroy();
 		Log.i(TAG, "Destroy");
 	}
-   
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		ShowPhoto();
+	}
 }

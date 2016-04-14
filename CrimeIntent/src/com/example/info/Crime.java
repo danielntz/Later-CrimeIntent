@@ -8,19 +8,29 @@ import org.json.JSONObject;
 
 public class Crime {
         
-	
+	    //添加图片信息
 	     private     UUID mId;   //通用唯一标准码
 	     private    String   mTitle  ;   //罪行名字
-	     private  Date   mDate;       //日期
+	     private  Date   mDate = new Date();       //日期
 	     private   Boolean  mSolved ;//是否解决
+	     private  Photo mPhoto ;       //添加图片信息
 	     
-	   //  封装字符串
+	   public Photo getmPhoto() {
+			return mPhoto;
+		}
+		public void setmPhoto(Photo mPhoto) {
+			this.mPhoto = mPhoto;
+		}
+	//  封装字符串
 	  public  JSONObject toJson() throws JSONException{
 		      JSONObject  object = new JSONObject();
 		      object.put("JSON_ID", mId);
 		      object.put("JSON_TITLE	", mTitle);
 		      object.put("JSON_DATE", mDate);
 		      object.put("JSON_MSOLVED", mSolved);
+		      if(mPhoto != null){
+		    	    object.put("JSON_FILENAME", mPhoto.toJSON());
+		      }
 		      return object;
 	  }
 	//读json文件
@@ -31,6 +41,11 @@ public class Crime {
 		    }
 		  mSolved = json.getBoolean("JSON_MSOLVED");
 		  mDate = new Date(json.getLong("JSON_DATE"));
+		 //添加图片信息
+		  if(json.has("JSON_FILENAME")){
+			      mPhoto = new Photo(json.getJSONObject("JSON_FILENAME"));
+			      
+		  }
 		  	   
 	  }
 	
@@ -68,6 +83,7 @@ public class Crime {
 		public void setmId(UUID mId) {
 			this.mId = mId;
 		}
+		
 	
 	  
 	

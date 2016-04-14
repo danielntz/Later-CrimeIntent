@@ -11,12 +11,14 @@ public class Photo {
 	public Photo(){
 
 	}
+	
+	public  Photo( String filename){
+		 this.mfilename = filename;
+	}
 	public String getMfilename() {
 		return mfilename;
 	}
-	public void setMfilename(String mfilename) {
-		this.mfilename = mfilename;
-	}
+	
      //封装图片信息成json
     public  JSONObject toJSON() throws JSONException{
     	

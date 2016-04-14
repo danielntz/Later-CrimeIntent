@@ -6,32 +6,49 @@
     <RelativeLayout 
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
+          android:layout_marginTop="20dip"
          >
+         <ImageView  
+                      android:id="@+id/crime_show"
+                      android:layout_width="120dip"
+                      android:layout_height="120dip"
+                      android:layout_marginLeft="15dip"
+                      android:scaleType="centerInside"
+                      android:background="@android:color/darker_gray"
+                      />
           
         <ImageButton  
                android:id="@+id/crime_take"
+               android:layout_below="@id/crime_show"
                android:layout_width="50dip"
+               android:layout_marginLeft="25dip"
                android:layout_height="60dip"
                android:background="@drawable/camera"
               />
-        <LinearLayout 
-              android:layout_toRightOf="@id/crime_take"
+        <RelativeLayout
+             
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
+              android:layout_toRightOf="@id/crime_show"
               android:orientation="vertical">
      <TextView   
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
-                       android:text="TITLE"/>
+                       android:text="TITLE"
+                       android:layout_marginLeft="7dip"
+                       android:textSize="20sp"
+                       />
      <EditText  
                           android:id="@+id/crime_name"
-                          android:layout_width="fill_parent"
+                          android:layout_width="260dip"
+                          android:layout_marginTop="35dip"
                           android:layout_height="wrap_content"
+                          android:layout_marginLeft="4dip"
                           android:hint="Enter a title for this crime"
          >
          
      </EditText>
-     </LinearLayout>
+     </RelativeLayout>
      </RelativeLayout>
      
      <TextView  

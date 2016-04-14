@@ -39,6 +39,8 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 	private   CheckBox  box;
 	private   EditText  title;
 	private   static  final int REQUEST_DATE = 0;
+	private   static  final int REQUEST_PHOTO = 1;
+	
 	private    ImageButton takephoto;
 	public   static CrimeFragment newInstance(UUID crimeid){
 		Bundle bundle  = new Bundle();
@@ -106,6 +108,12 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			Date date = (Date) data.getSerializableExtra("Crime_Date");
 			crimeselect.setmDate(date);
 			buttondate.setText(crimeselect.getmDate().toString().replace("格林尼治标准时间", ""));
+		}else if(requestCode == REQUEST_PHOTO){
+			//创建一个照片对象添加到Crime类中
+			String filename = data.getStringExtra("PHOTO");
+			if(filename != null){
+				Log.i(TAG, "filename +" + filename);
+			}
 		}
 	} 
 	@Override
@@ -137,7 +145,9 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			break;
 		case R.id.crime_take:
 			Intent i  = new Intent(getContext(),CrimeCameraActivity.class);
-			 startActivity(i);
+			//以接受返回值的方式来启动CrimeCameraActivity
+			startActivityForResult(i, REQUEST_PHOTO);
+			// startActivity(i);
 			 break;
 		default:
 			break;
@@ -160,5 +170,5 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		super.onDestroy();
 		Log.i(TAG, "Destroy");
 	}
-
+   
 }

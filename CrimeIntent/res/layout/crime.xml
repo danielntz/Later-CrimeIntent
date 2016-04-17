@@ -3,68 +3,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <RelativeLayout 
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="20dip"
-         >
-         <ImageView  
-                      android:id="@+id/crime_show"
-                      android:layout_width="120dip"
-                      android:layout_height="120dip"
-                      android:layout_marginLeft="15dip"
-                      android:scaleType="centerInside"
-                      android:background="@android:color/darker_gray"
-                      />
-          
-        <ImageButton  
-               android:id="@+id/crime_take"
-               android:layout_below="@id/crime_show"
-               android:layout_width="50dip"
-               android:layout_marginLeft="25dip"
-               android:layout_height="60dip"
-               android:background="@drawable/camera"
-              />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip" >
+
+        <ImageView
+            android:id="@+id/crime_show"
+            android:layout_width="120dip"
+            android:layout_height="120dip"
+            android:layout_marginLeft="15dip"
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerInside" />
+
+        <ImageButton
+            android:id="@+id/crime_take"
+            android:layout_width="50dip"
+            android:layout_height="60dip"
+            android:layout_below="@id/crime_show"
+            android:layout_marginLeft="25dip"
+            android:background="@drawable/camera" />
+
         <RelativeLayout
-             
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_toRightOf="@id/crime_show"
-              android:orientation="vertical">
-     <TextView   
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:text="TITLE"
-                       android:layout_marginLeft="7dip"
-                       android:textSize="20sp"
-                       />
-     <EditText  
-                          android:id="@+id/crime_name"
-                          android:layout_width="260dip"
-                          android:layout_marginTop="35dip"
-                          android:layout_height="wrap_content"
-                          android:layout_marginLeft="4dip"
-                          android:hint="Enter a title for this crime"
-         >
-         
-     </EditText>
-     </RelativeLayout>
-     </RelativeLayout>
-     
-     <TextView  
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Details"/>
-     <Button  
-                          android:id="@+id/crime_date"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:text="sunday  13: 09"
-                          
-                       ></Button>
-     <CheckBox  
-                            android:id="@+id/crime_solve"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Solved"/>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/crime_show"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dip"
+                android:text="TITLE"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/crime_name"
+                android:layout_width="260dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dip"
+                android:layout_marginTop="35dip"
+                android:hint="Enter a title for this crime" >
+            </EditText>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Details" />
+
+    <Button
+        android:id="@+id/crime_date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="sunday  13: 09" >
+    </Button>
+
+    <CheckBox
+        android:id="@+id/crime_solve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Solved" />
+
+    <Button
+        android:id="@+id/crime_suspectButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:text="打开联系人应用" />
+
+    <Button
+        android:id="@+id/crime_reportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="发送消息" />
+
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
@@ -19,6 +20,7 @@ import com.example.testmenu.R;
 //碎片日期界面
 public class DatePickerFragment   extends DialogFragment{
 
+	protected static final String TAG = null;
 	private  Date mdate;
 	private  DatePicker picker;
 
@@ -37,17 +39,20 @@ public class DatePickerFragment   extends DialogFragment{
 		Calendar  calendar = Calendar.getInstance();
 		calendar.setTime(mdate);
 		int year = calendar.get(Calendar.YEAR);
-		final int month = calendar.get(Calendar.MONTH);
-		final int day = calendar.get(Calendar.DAY_OF_MONTH);
-		picker.init(year, month, day, new OnDateChangedListener() {
+		 int month = calendar.get(Calendar.MONTH);
+		 int day = calendar.get(Calendar.DAY_OF_MONTH);
+		  picker.init(year, month, day, new OnDateChangedListener() {
 			//Date监听器
 			public void onDateChanged(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
 				// TODO Auto-generated method stub
-				mdate = new GregorianCalendar(year, month, day).getTime();
+			//	mdate = new GregorianCalendar(year, month, day).getTime();
+				mdate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+				Log.i(TAG, mdate.toString());
 				getArguments().putSerializable("Crime_Date", mdate);  //为防止设备旋转，把date对象回写到fragment argument中
 			}
 		});
+		
 
 
 

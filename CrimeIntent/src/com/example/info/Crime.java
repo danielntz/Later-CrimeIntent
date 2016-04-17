@@ -12,10 +12,11 @@ public class Crime {
 	     private     UUID mId;   //通用唯一标准码
 	     private    String   mTitle  ;   //罪行名字
 	     private  Date   mDate = new Date();       //日期
-	     private   Boolean  mSolved ;//是否解决
+	     private   Boolean  mSolved ;             //是否解决
 	     private  Photo mPhoto ;       //添加图片信息
-	     
-	   public Photo getmPhoto() {
+	     private  String  mSespect ;   //添加嫌疑人名字
+	 
+	     public Photo getmPhoto() {
 			return mPhoto;
 		}
 		public void setmPhoto(Photo mPhoto) {
@@ -31,8 +32,15 @@ public class Crime {
 		      if(mPhoto != null){
 		    	    object.put("JSON_FILENAME", mPhoto.toJSON());
 		      }
+		      object.put("JSON_SUSPECT", mSespect.toString());
 		      return object;
 	  }
+	public String getmSespect() {
+		return mSespect;
+	}
+	public void setmSespect(String mSespect) {
+		this.mSespect = mSespect;
+	}
 	//读json文件
 	  public   Crime(JSONObject json) throws JSONException{
 		  mId = UUID.fromString(json.getString("JSON_ID"));
@@ -44,7 +52,10 @@ public class Crime {
 		 //添加图片信息
 		  if(json.has("JSON_FILENAME")){
 			      mPhoto = new Photo(json.getJSONObject("JSON_FILENAME"));
-			      
+	     //嫌疑人信息
+			      if(json.has("JSON_SUSPECT")){
+			    	  mSespect = json.getString("JSON_SUSPECT");
+			      }
 		  }
 		  	   
 	  }

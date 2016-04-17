@@ -10,11 +10,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,8 +50,11 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 	private   static  final int REQUEST_DATE = 0;
 	private   static  final int REQUEST_PHOTO = 1;
 	private   ImageView image_show ;
-    private   static final  String DIALOG_IMAGE = "image";
+	private   static final  String DIALOG_IMAGE = "image";
 	private    ImageButton takephoto;
+	private   static final int Request_Contact = 2 ;
+	private   Button   mSuspectbutton;
+	private   Button   mReportbutton;
 	public   static CrimeFragment newInstance(UUID crimeid){
 		Bundle bundle  = new Bundle();
 		bundle.putSerializable("Crime_Id", crimeid);
@@ -77,6 +83,8 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		title = (EditText)view.findViewById(R.id.crime_name);
 		box = (CheckBox)view.findViewById(R.id.crime_solve);
 		image_show = (ImageView)view.findViewById(R.id.crime_show);  //显示图片
+		mSuspectbutton = (Button)view.findViewById(R.id.crime_suspectButton);  //打开联系人应用按钮
+		mReportbutton = (Button)view.findViewById(R.id.crime_reportButton);    //打开一个发送短信的应用
 		//1获得点击列表项的UUID 2获得重新编辑框的UUID
 		UUID crimeid = (UUID)getArguments().getSerializable("Crime_Id");
 		Log.i(TAG, crimeid+"");
@@ -108,15 +116,23 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		//检查设备是否有相机
 		PackageManager pm = getActivity().getPackageManager();
 		boolean hasAcamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)|| pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)
-				              || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1 ||
-				                Camera.getNumberOfCameras() > 0;
-		 if( !hasAcamera){
-			 takephoto.setEnabled(true);
-		 }
-		buttondate.setOnClickListener(this);
-		takephoto.setOnClickListener(this);
-		image_show.setOnClickListener(this);
-		return view;
+				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1 ||
+				Camera.getNumberOfCameras() > 0;
+				if( !hasAcamera){
+					takephoto.setEnabled(true);
+				}
+				if(crimeselect.getmSespect()!= null){
+					mSuspectbutton.setText(crimeselect.getmSespect());
+				}
+				buttondate.setOnClickListener(this);
+				takephoto.setOnClickListener(this);
+				image_show.setOnClickListener(this);
+				mSuspectbutton.setOnClickListener(this);
+				mReportbutton.setOnClickListener(this);
+				//box.setEnabled(false);
+				//title.setEnabled(false);
+
+				return view;
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -144,7 +160,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 				//因为你需要对图片进行处理，对图片操作，这样就方便些
 				Photo photo = new Photo(filename);
 				crimeselect.setmPhoto(photo);
-			    ShowPhoto();
+				ShowPhoto();
 				//	Log.i(TAG, "Crime:" + crimeselect.getMmTitle()+"has a photo");
 			}
 		}
@@ -158,7 +174,13 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 				NavUtils.navigateUpFromSameTask(getActivity());   //导航到父Activity
 			}
 			return true;
+		case R.id.menu_item_edit_crime:
 
+			crimeselect.setMmTitle(title.getText().toString());
+			crimeselect.setmSolved(box.isChecked());
+			box.setEnabled(false);
+			title.setEnabled(false);
+			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
@@ -183,14 +205,21 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			// startActivity(i);
 			break;
 		case R.id.crime_show:
-			 Photo p  = crimeselect.getmPhoto();
-			 if( p == null){
-				 return ;
-			 }
-			 FragmentManager fm1 = getActivity().getSupportFragmentManager();
-			 String path = getActivity().getFileStreamPath(p.getMfilename()).getAbsolutePath();
-			 ImageFragment.newInstance(path).show(fm1, DIALOG_IMAGE);
-			 
+			Photo p  = crimeselect.getmPhoto();
+			if( p == null){
+				return ;
+			}
+			FragmentManager fm1 = getActivity().getSupportFragmentManager();
+			String path = getActivity().getFileStreamPath(p.getMfilename()).getAbsolutePath();
+			ImageFragment.newInstance(path).show(fm1, DIALOG_IMAGE);
+			break;
+		case R.id.crime_suspectButton:
+			//隐式Intent
+			Intent iii  = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+			startActivityForResult(iii, Request_Contact);
+			break;
+		case R.id.crime_reportButton:
+			break;
 		default:
 			break;
 		}
@@ -211,6 +240,8 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		Log.i(TAG, "Destroy");
+		crimeselect.setMmTitle(title.getText().toString());
+		crimeselect.setmSolved(box.isChecked());
 	}
 	@Override
 	public void onStart() {
@@ -218,4 +249,12 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		super.onStart();
 		ShowPhoto();
 	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.crime_edit, menu);
+	}
+
 }

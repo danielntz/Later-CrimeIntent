@@ -149,8 +149,9 @@ public class CrimeListFragment  extends  ListFragment{
     	// TODO Auto-generated method stub
     	super.onResume();
         adapter.refresh(CrimeGet.getCrimeget());
+        Log.i(TAG, "sdfsdf");
     }
-    
+    //创建操作栏的选项菜单
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     	// TODO Auto-generated method stub

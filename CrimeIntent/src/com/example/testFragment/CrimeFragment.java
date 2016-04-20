@@ -1,7 +1,12 @@
 package com.example.testFragment;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.example.fuzhu.CrimalIntentJSONSerializer;
 import com.example.info.Crime;
 import com.example.info.CrimeGet;
 import com.example.info.Photo;
@@ -100,6 +106,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		//实现层级式导航、1 元数据 在配置文件中加入父activity属性 ，不采用intent方式
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 			if(NavUtils.getParentActivityName(getActivity()) != null){
+				CrimeGet.setAdd(false);
 				getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
@@ -180,6 +187,7 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 			crimeselect.setmSolved(box.isChecked());
 			box.setEnabled(false);
 			title.setEnabled(false);
+			CrimeGet.setEdit(true);
 			return true;
 
 		default:
@@ -256,5 +264,17 @@ public class CrimeFragment  extends Fragment implements android.view.View.OnClic
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.crime_edit, menu);
 	}
-
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		Log.i(TAG, "暂停");
+	}
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.i(TAG, "我又回来了");
+	}
+		
 }

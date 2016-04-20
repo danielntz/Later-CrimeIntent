@@ -1,9 +1,14 @@
 package com.example.info;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONException;
+
+import com.example.fuzhu.CrimalIntentJSONSerializer;
 
 public class CrimeList {
       
@@ -42,5 +47,11 @@ public class CrimeList {
 		    }
 		  return  crimecollect;
 	  }
+	  //读取本地文件的数据
+	   /*public  List<Crime> CrimeList3() throws IOException, JSONException{
+		  
+		    List<Crime> crimes = new  CrimalIntentJSONSerializer(, str)
+		     return  crimes;
+	  } */
 	  
 }

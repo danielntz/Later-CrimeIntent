@@ -32,7 +32,7 @@ public class Crime {
 		      if(mPhoto != null){
 		    	    object.put("JSON_FILENAME", mPhoto.toJSON());
 		      }
-		      object.put("JSON_SUSPECT", mSespect.toString());
+		      object.put("JSON_SUSPECT", mSespect);
 		      return object;
 	  }
 	public String getmSespect() {

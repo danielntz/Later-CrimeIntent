@@ -1,10 +1,15 @@
 package com.example.testFragment;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,14 +27,15 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
-
 import com.example.adapter.CrimeAdapter;
 import com.example.adapter.CrimeListAdapter;
+import com.example.fuzhu.CrimalIntentJSONSerializer;
 import com.example.info.Crime;
 import com.example.info.CrimeGet;
 import com.example.info.CrimeList;
 import com.example.testmenu.CrimePagerActivity;
 import com.example.testmenu.R;
+
 /**
  * 罪行列表项,ListFragment自带ListView
  * @author jsjxy
@@ -42,11 +48,31 @@ public class CrimeListFragment  extends  ListFragment{
        public   CrimeList  crime_hhh = new CrimeList();   //注意空指针
        public   CrimeListAdapter  adapter  = new CrimeListAdapter();
        public   CrimeListAdapter  adapterlist;
+       private  String content  = null;
        public void onCreate(Bundle savedInstanceState) {
     	// TODO Auto-generated method stub
     	super.onCreate(savedInstanceState);
     	getActivity().setTitle("Crime List");
-    	crime_item =  crime_hhh.CrimeList2();
+    //	crime_item =  crime_hhh.CrimeList2();  //采用测试数据
+    	
+		//	crime_item  = crime_hhh.CrimeList3();
+    		
+    		
+				try {
+					content = CrimeList3();
+					crime_item = getListperson(content);
+					
+					for(int i = 0 ; i< crime_item.size(); i++){
+						  Crime crime = crime_item.get(i);
+						  Log.i(TAG, crime.getMmTitle());
+						 
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
+		 //测试本地文件中的数据
     	CrimeGet.setCrimeget(crime_item);    //把当前list中的crime信息保存起来
         adapter = new CrimeListAdapter(crime_item, getContext());
     	setListAdapter(adapter);
@@ -149,7 +175,50 @@ public class CrimeListFragment  extends  ListFragment{
     	// TODO Auto-generated method stub
     	super.onResume();
         adapter.refresh(CrimeGet.getCrimeget());
-        Log.i(TAG, "sdfsdf");
+        //如果添加了，就要重新写入文件
+        if(CrimeGet.isAdd()){
+        	try {
+  			  CrimalIntentJSONSerializer  crimewrite = new CrimalIntentJSONSerializer(getActivity(), "data.txt");
+  			   crimewrite.saveCrimes(CrimeGet.getCrimeget(),"data.txt");
+  			   CrimeGet.setAdd(false);
+  		} catch (JSONException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		} catch (IOException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		};
+  	 }else if(CrimeGet.isEdit()){
+  		try {
+			  CrimalIntentJSONSerializer  crimewrite = new CrimalIntentJSONSerializer(getActivity(), "data.txt");
+			   crimewrite.saveCrimes(CrimeGet.getCrimeget(),"data.txt");
+			   CrimeGet.setAdd(false);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+            CrimeGet.setEdit(false);
+        }else if(CrimeGet.isCancel()){
+        	try {
+    			  CrimalIntentJSONSerializer  crimewrite = new CrimalIntentJSONSerializer(getActivity(), "data.txt");
+    			   crimewrite.saveCrimes(CrimeGet.getCrimeget(),"data.txt");
+    			   CrimeGet.setAdd(false);
+    		} catch (JSONException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		};
+        	CrimeGet.setCancel(false);
+        }
+        
+        
+        
+       // Log.i(TAG, "sdfsdf");
     }
     //创建操作栏的选项菜单
     @Override
@@ -172,6 +241,7 @@ public class CrimeListFragment  extends  ListFragment{
 			 crime.setMmTitle(null);
 			 Intent i = new Intent(getContext(),CrimePagerActivity.class);
 			 i.putExtra("Crime_Id",crime.getmId());
+			 CrimeGet.setAdd(true);
 		//	 Log.i(TAG, crime.getmId()+"");
 			 
 			 startActivity(i);
@@ -209,7 +279,53 @@ public class CrimeListFragment  extends  ListFragment{
     	 int position = info.position;
     	 CrimeGet.getCrimeget().remove(position);   //刷新列表
     	 adapter.refresh(CrimeGet.getCrimeget());   //刷新列表
+    	 try {
+			  CrimalIntentJSONSerializer  crimewrite = new CrimalIntentJSONSerializer(getActivity(), "data.txt");
+			   crimewrite.saveCrimes(CrimeGet.getCrimeget(),"data.txt");
+			   CrimeGet.setAdd(false);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
     	 return super.onContextItemSelected(item);
     }
+      //从文件中读取JSON字符串
+      public  String CrimeList3() throws IOException, JSONException{
+    	 // String  content;
+  		FileInputStream  input = getActivity().openFileInput("data.txt");
+  		byte  []sentenece = new byte[input.available()];
+  		input.read(sentenece);
+  		content = new String(sentenece);   
+	     return  content;
+} 
+      
+      //解析json数组(没有关键字的json字符串)
+  	@SuppressLint("UseValueOf")
+	@SuppressWarnings("deprecation")
+	public   List<Crime> getListperson(String jsonstring) throws Exception{
+  		          
+  		     List<Crime> list = new ArrayList<Crime>();
+  		   //  JSONObject jsonobject = new JSONObject(jsonstring);
+  		     
+  		      JSONArray jsonarrty = new JSONArray(jsonstring);  
+  		      Log.i(TAG, jsonarrty.length() + "");
+  		     for(int i = 0;i < jsonarrty.length(); i++){
+  		    //	 JSONObject   jsonobject2 =  jsonarrty.getJSONObject(i);      //json数组中有多个json对象
+  		    	String s = String.valueOf(jsonarrty.get(i));
+  		    	Log.i(TAG, s);
+  		    	JSONObject  jsonobject = new JSONObject(s);
+  		    	Crime crime = new Crime();
+  		    	String id = jsonobject.getString("JSON_ID");
+  		    	crime.setmId(UUID.fromString(id));
+  		    	crime.setMmTitle(jsonobject.getString("JSON_TITLE\t"));
+  		    	crime.setmSolved(new Boolean(jsonobject.getString("JSON_MSOLVED")));
+  		    	crime.setmDate(new Date(jsonobject.getString("JSON_DATE").replace("格林尼治标准时间+0800","")));
+  		    	list.add(crime);
+  		     }
+  		return list;
+  	}
     
 }
